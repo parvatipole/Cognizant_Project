@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Backend Test</title>
+  </head>
+  <body>
+    <h1>CoffeeFlow Backend Test</h1>
+
+    <button onclick="testBackend()">Test Backend Connection</button>
+    <button onclick="testLogin()">Test Login</button>
+
+    <div
+      id="result"
+      style="margin-top: 20px; padding: 10px; border: 1px solid #ccc"
+    ></div>
+
+    <script>
+      async function testBackend() {
+        const result = document.getElementById("result");
+        try {
+          const response = await fetch("http://localhost:8080/api/machines");
+          result.innerHTML = `<strong>✅ Backend is running!</strong><br>Status: ${response.status}`;
+          result.style.backgroundColor = "#d4edda";
+        } catch (error) {
+          result.innerHTML = `<strong>❌ Backend not running!</strong><br>Error: ${error.message}`;
+          result.style.backgroundColor = "#f8d7da";
+        }
+      }
+
+      async function testLogin() {
+        const result = document.getElementById("result");
+        try {
+          const response = await fetch(
+            "http://localhost:8080/api/auth/signin",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                username: "tech1",
+                password: "password",
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            result.innerHTML = `<strong>✅ Login successful!</strong><br>Token: ${data.accessToken.substring(0, 20)}...`;
+            result.style.backgroundColor = "#d4edda";
+          } else {
+            result.innerHTML = `<strong>⚠️ Login failed!</strong><br>Error: ${data.message}`;
+            result.style.backgroundColor = "#fff3cd";
+          }
+        } catch (error) {
+          result.innerHTML = `<strong>❌ Backend not running!</strong><br>Error: ${error.message}`;
+          result.style.backgroundColor = "#f8d7da";
+        }
+      }
+    </script>
+  </body>
+</html>

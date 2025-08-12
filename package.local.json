@@ -1,0 +1,24 @@
+{
+  "name": "coffee-flow-local",
+  "version": "1.0.0",
+  "description": "Coffee Vending Machine Management System - Local Development",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "dev:backend": "cd backend && mvn spring-boot:run",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:backend\"",
+    "build": "npm run build:client && npm run build:backend",
+    "build:client": "vite build",
+    "build:backend": "cd backend && mvn clean package",
+    "start": "npm run start:backend",
+    "start:backend": "cd backend && java -jar target/coffee-flow-backend-0.0.1-SNAPSHOT.jar",
+    "test": "vitest --run",
+    "test:backend": "cd backend && mvn test",
+    "clean": "rm -rf dist node_modules backend/target",
+    "setup": "npm install && cd backend && mvn clean install",
+    "db:create": "mysql -u root -p -e 'CREATE DATABASE IF NOT EXISTS coffee_flow_db;'",
+    "db:reset": "mysql -u root -p -e 'DROP DATABASE IF EXISTS coffee_flow_db; CREATE DATABASE coffee_flow_db;'"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
