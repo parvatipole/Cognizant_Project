@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
+import { findUserByUsername, verifyPassword, isDbEnabled } from "../db";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 const JWT_EXPIRES_IN_SECONDS = 60 * 60 * 24; // 24 hours
@@ -42,9 +43,46 @@ const mockUsers: MockUser[] = [
   },
 ];
 
-export const handleSignIn: RequestHandler = (req, res) => {
+export const handleSignIn: RequestHandler = async (req, res) => {
   const { username, password } = req.body || {};
 
+  // Try DB first if configured
+  if (isDbEnabled()) {
+    try {
+      const dbUser = await findUserByUsername(username);
+      if (dbUser) {
+        const ok = await verifyPassword(password, dbUser.password_hash);
+        if (!ok) {
+          return res.status(401).json({ message: "Invalid credentials" });
+        }
+        const payload = {
+          sub: dbUser.username,
+          role: dbUser.role,
+          name: dbUser.name,
+          assignedLocation: dbUser.assigned_location || undefined,
+          assignedOffice: dbUser.assigned_office || undefined,
+        };
+        const token = jwt.sign(payload, JWT_SECRET, {
+          expiresIn: JWT_EXPIRES_IN_SECONDS,
+        });
+        return res.status(200).json({
+          accessToken: token,
+          tokenType: "Bearer",
+          id: dbUser.id,
+          username: dbUser.username,
+          name: dbUser.name,
+          role: dbUser.role,
+          authorities: [dbUser.role],
+          assignedLocation: dbUser.assigned_location || undefined,
+          assignedOffice: dbUser.assigned_office || undefined,
+        });
+      }
+    } catch (e) {
+      // fall through to mock
+    }
+  }
+
+  // Fallback to mock users
   const user = mockUsers.find(
     (u) => u.username === username && u.password === password,
   );
