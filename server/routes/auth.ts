@@ -73,6 +73,8 @@ export const handleSignIn: RequestHandler = (req, res) => {
     name: user.name,
     role: user.role,
     authorities: [user.role],
+    assignedLocation: user.assignedLocation,
+    assignedOffice: user.assignedOffice,
   });
 };
 
