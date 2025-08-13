@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth, UserRole } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,19 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Coffee, Settings, Eye, Edit3 } from "lucide-react";
+
+import { Coffee, Settings, Eye } from "lucide-react";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [selectedRole, setSelectedRole] = useState<UserRole | "">("");
   const [error, setError] = useState("");
   const { login, isLoading } = useAuth();
 
@@ -31,14 +24,9 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    if (!selectedRole) {
-      setError("Please select a role");
-      return;
-    }
-
     const success = await login(username, password);
     if (!success) {
-      setError("Invalid credentials. Try: tech1/password or admin1/password");
+      setError("Invalid credentials. Try: ashutosh/cdc123 (technician) or admin/admin123 (admin)");
     }
   };
 
@@ -100,47 +88,6 @@ export default function Login() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="role" className="text-gray-700 font-medium">
-                  Select Role
-                </Label>
-                <Select
-                  value={selectedRole}
-                  onValueChange={(value: UserRole) => setSelectedRole(value)}
-                >
-                  <SelectTrigger className="h-11 border-gray-200 focus:border-orange-500 focus:ring-orange-500">
-                    <SelectValue placeholder="Choose your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="technician">
-                      <div className="flex items-start gap-3 py-2">
-                        <Edit3 className="w-5 h-5 text-orange-500 mt-0.5" />
-                        <div>
-                          <div className="font-medium text-gray-800">
-                            Technician
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            Full access to edit machine data
-                          </div>
-                        </div>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="admin">
-                      <div className="flex items-start gap-3 py-2">
-                        <Eye className="w-5 h-5 text-blue-500 mt-0.5" />
-                        <div>
-                          <div className="font-medium text-gray-800">
-                            Administrator
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            View-only access to all data
-                          </div>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               {error && (
                 <Alert variant="destructive">
@@ -167,17 +114,17 @@ export default function Login() {
             {/* Demo Accounts Info */}
             <div className="mt-6 pt-6 border-t border-gray-100">
               <div className="text-sm text-gray-500 space-y-2">
-                <p className="font-medium text-gray-700">Demo Accounts:</p>
-                <div className="space-y-1 text-xs">
-                  <div className="flex items-center gap-2">
-                    <Settings className="w-3 h-3 text-orange-500" />
-                    <span>Technician: tech1 / password</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-3 h-3 text-blue-500" />
-                    <span>Admin: admin1 / password</span>
-                  </div>
-                </div>
+                                 <p className="font-medium text-gray-700">Demo Accounts:</p>
+                 <div className="space-y-1 text-xs">
+                   <div className="flex items-center gap-2">
+                     <Settings className="w-3 h-3 text-orange-500" />
+                     <span>Technician (CDC Pune): ashutosh / cdc123</span>
+                   </div>
+                   <div className="flex items-center gap-2">
+                     <Eye className="w-3 h-3 text-blue-500" />
+                     <span>Admin: admin / admin123</span>
+                   </div>
+                 </div>
               </div>
             </div>
           </CardContent>

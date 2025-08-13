@@ -294,6 +294,48 @@ export default function CorporateDashboard() {
             alerts: 2,
           },
         },
+        {
+          name: "CDC Office",
+          address: "CDC Campus, Pune - 411020",
+          machines: [
+            {
+              id: "PUN-CDC-001",
+              name: "CDC Cafeteria",
+              status: "operational",
+              performance: {
+                dailyCups: 210,
+                efficiency: 97,
+                supplies: { water: 90, milk: 85, coffee: 88, sugar: 92 },
+              },
+            },
+            {
+              id: "PUN-CDC-002",
+              name: "CDC Lobby",
+              status: "operational",
+              performance: {
+                dailyCups: 95,
+                efficiency: 93,
+                supplies: { water: 82, milk: 70, coffee: 84, sugar: 88 },
+              },
+            },
+            {
+              id: "PUN-CDC-003",
+              name: "CDC 2nd Floor Break",
+              status: "maintenance",
+              performance: {
+                dailyCups: 0,
+                efficiency: 0,
+                supplies: { water: 45, milk: 35, coffee: 40, sugar: 50 },
+              },
+            },
+          ],
+          performance: {
+            weeklyCups: 2800,
+            efficiency: 95,
+            uptime: 98.0,
+            alerts: 1,
+          },
+        },
       ],
     },
     {
@@ -502,6 +544,35 @@ export default function CorporateDashboard() {
   useEffect(() => {
     setLocations(corporateLocations);
   }, []);
+
+  // Auto-select assigned location and office for technicians (e.g., ashutosh -> Pune / CDC Office)
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
+  useEffect(() => {
+    if (hasAutoSelected) return;
+    if (!user || user.role !== "technician") return;
+
+    const assignedLocation = user.assignedLocation;
+    const assignedOffice = user.assignedOffice;
+    if (!assignedLocation || !assignedOffice) return;
+
+    const locationData = corporateLocations.find(
+      (l) => l.name === assignedLocation,
+    );
+    if (!locationData) return;
+
+    setSelectedLocation(assignedLocation);
+    setOffices(locationData.offices);
+
+    const officeData = locationData.offices.find(
+      (o) => o.name === assignedOffice,
+    );
+    if (!officeData) return;
+
+    setSelectedOffice(assignedOffice);
+    setMachines(officeData.machines);
+    setCurrentStep(2);
+    setHasAutoSelected(true);
+  }, [user, hasAutoSelected]);
 
   const handleLocationSelect = (location: string) => {
     setSelectedLocation(location);

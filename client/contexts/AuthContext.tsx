@@ -9,6 +9,8 @@ export interface User {
   username: string;
   role: UserRole;
   name: string;
+  assignedLocation?: string;
+  assignedOffice?: string;
 }
 
 interface AuthContextType {
@@ -97,6 +99,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         username: response.username,
         name: response.name,
         role: response.role as UserRole,
+        assignedLocation: (response as any).assignedLocation,
+        assignedOffice: (response as any).assignedOffice,
       };
 
       // Store user data
@@ -121,24 +125,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     // Fallback to mock authentication for demo purposes
     const mockUsers = [
       {
-        id: "1",
-        username: "tech1",
+        id: "t1",
+        username: "ashutosh",
+        password: "cdc123",
         role: "technician",
-        name: "John Technician",
+        name: "Ashutosh",
+        assignedLocation: "Pune",
+        assignedOffice: "CDC Office",
       },
-      { id: "2", username: "admin1", role: "admin", name: "Sarah Admin" },
+      {
+        id: "t2",
+        username: "rahul",
+        password: "rahul123",
+        role: "technician",
+        name: "Rahul Verma",
+        assignedLocation: "Mumbai",
+        assignedOffice: "Andheri Tech Center",
+      },
+      { id: "a1", username: "admin", password: "admin123", role: "admin", name: "Admin User" },
     ];
 
     const foundUser = mockUsers.find((u) => u.username === username);
-    if (foundUser && (password === "password" || password === username)) {
-      // Create mock JWT token
-      const mockToken = btoa(
+    if (foundUser && password === (foundUser as any).password) {
+      // Create mock JWT token (header.payload.signature), base64 to satisfy atob
+      const header = btoa(JSON.stringify({ alg: "none", typ: "JWT" }));
+      const payload = btoa(
         JSON.stringify({
           sub: foundUser.username,
           role: foundUser.role,
+          name: foundUser.name,
+          assignedLocation: (foundUser as any).assignedLocation,
+          assignedOffice: (foundUser as any).assignedOffice,
           exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
         }),
       );
+      const mockToken = `${header}.${payload}.mock`;
 
       tokenManager.setToken(mockToken);
 
@@ -147,6 +168,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         username: foundUser.username,
         name: foundUser.name,
         role: foundUser.role as UserRole,
+        assignedLocation: (foundUser as any).assignedLocation,
+        assignedOffice: (foundUser as any).assignedOffice,
       };
 
       setUser(userData);

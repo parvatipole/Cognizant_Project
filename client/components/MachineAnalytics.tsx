@@ -37,6 +37,7 @@ import {
   Droplets,
   Thermometer,
   Gauge,
+  Settings,
 } from "lucide-react";
 
 interface MachineAnalyticsProps {

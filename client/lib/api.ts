@@ -22,7 +22,12 @@ export const tokenManager = {
 
   isTokenExpired: (token: string): boolean => {
     try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
+      const payloadPart = token.split(".")[1];
+      if (!payloadPart) return true;
+      // Support both base64url (JWT) and base64
+      const base64 = payloadPart.replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
+      const payload = JSON.parse(atob(padded));
       const currentTime = Date.now() / 1000;
       return payload.exp < currentTime;
     } catch {
@@ -47,13 +52,13 @@ class ApiClient {
 
     // Add JWT token to headers if available
     const token = tokenManager.getToken();
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
 
     if (token && !tokenManager.isTokenExpired(token)) {
-      headers.Authorization = `Bearer ${token}`;
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     try {
@@ -101,11 +106,13 @@ class ApiClient {
     return this.request<{
       accessToken: string;
       tokenType: string;
-      id: number;
+      id: string | number;
       username: string;
       name: string;
       role: string;
       authorities: string[];
+      assignedLocation?: string;
+      assignedOffice?: string;
     }>("/auth/signin", {
       method: "POST",
       body: JSON.stringify({ username, password }),

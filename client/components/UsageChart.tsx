@@ -217,18 +217,11 @@ export default function UsageChart({ className }: UsageChartProps) {
                     mirror={false}
                     reversed={false}
                     orientation="bottom"
-                    tickFormatter={undefined}
                     hide={false}
                     interval={0}
                     scale="auto"
-                    tickCount={undefined}
-                    domain={undefined}
                     padding={{ left: 0, right: 0 }}
                     minTickGap={5}
-                    angle={0}
-                    textAnchor={undefined}
-                    verticalAnchor={undefined}
-                    width={undefined}
                     height={30}
                   />
                   <YAxis
@@ -243,19 +236,12 @@ export default function UsageChart({ className }: UsageChartProps) {
                     mirror={false}
                     reversed={false}
                     orientation="left"
-                    tickFormatter={undefined}
                     hide={false}
                     interval={0}
                     scale="auto"
-                    tickCount={undefined}
-                    domain={undefined}
                     padding={{ top: 0, bottom: 0 }}
                     minTickGap={5}
-                    angle={0}
-                    textAnchor={undefined}
-                    verticalAnchor={undefined}
                     width={60}
-                    height={undefined}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Area
@@ -287,18 +273,11 @@ export default function UsageChart({ className }: UsageChartProps) {
                     mirror={false}
                     reversed={false}
                     orientation="bottom"
-                    tickFormatter={undefined}
                     hide={false}
                     interval={0}
                     scale="auto"
-                    tickCount={undefined}
-                    domain={undefined}
                     padding={{ left: 0, right: 0 }}
                     minTickGap={5}
-                    angle={0}
-                    textAnchor={undefined}
-                    verticalAnchor={undefined}
-                    width={undefined}
                     height={30}
                   />
                   <YAxis
@@ -313,19 +292,12 @@ export default function UsageChart({ className }: UsageChartProps) {
                     mirror={false}
                     reversed={false}
                     orientation="left"
-                    tickFormatter={undefined}
                     hide={false}
                     interval={0}
                     scale="auto"
-                    tickCount={undefined}
-                    domain={undefined}
                     padding={{ top: 0, bottom: 0 }}
                     minTickGap={5}
-                    angle={0}
-                    textAnchor={undefined}
-                    verticalAnchor={undefined}
                     width={60}
-                    height={undefined}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar
